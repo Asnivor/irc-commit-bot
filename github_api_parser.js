@@ -203,7 +203,8 @@ module.exports = {
 
             // https://developer.github.com/v3/activity/events/types/#watchevent
             case "watch":
-                break;
+                var ret = gh_watch(req);
+                return ret;
 
             default:
         }
@@ -717,6 +718,23 @@ var gh_push = function (req) {
             leftOver);
 
         res.push(last);
+    }
+
+    return res;
+}
+
+// https://developer.github.com/v3/activity/events/types/#watchevent
+var gh_watch = function (req) {
+
+    var res = new Array();
+
+    var build01 = util.format("\x02\x0306%s\x03\x02: %s starred the repo! - %s",
+        req.body["repository"]["full_name"],
+        req.body["sender"]["login"],
+        req.body["sender"]["html_url"]);
+
+    if (build01) {
+        res.push(build01);
     }
 
     return res;
